@@ -152,10 +152,19 @@ _TOKENS_OUTRAS_PROT = (
 def _fase_do_nome(nome: str):
     """Extrai a fase (a/b/c) de um nome de canal, se houver token isolado.
 
-    Ex.: "Idiff Trip A" -> "a"; "TRIP GERAL" -> None (sem fase).
+    Também aceita 1/2/3 ou L1/L2/L3 como A/B/C.
+    Ex.: "Idiff Trip A" -> "a"; "Trip L3" -> "c"; "TRIP GERAL" -> None.
     """
-    achados = re.findall(r"(?i)(?<![a-z])([abc])(?![a-z])", nome)
-    return achados[-1].lower() if achados else None
+    achados_abc = re.findall(r"(?i)(?<![a-z])([abc])(?![a-z])", nome)
+    if achados_abc:
+        return achados_abc[-1].lower()
+
+    achados_123 = re.findall(r"(?i)(?<![a-z0-9])(?:l)?([123])(?![a-z0-9])", nome)
+    if achados_123:
+        mapa = {'1': 'a', '2': 'b', '3': 'c'}
+        return mapa[achados_123[-1]]
+
+    return None
 
 
 def detectar_operacao_rele(df_raw, fases):
