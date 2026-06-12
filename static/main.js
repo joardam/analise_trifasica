@@ -208,7 +208,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
     const maxFinito = (arrays) => {
         const v = finitos(arrays);
-        return v.length ? Math.max(...v) : 0;
+        return v.length ? v.reduce((a, b) => (a > b ? a : b)) : 0;
     };
 
     const axis = (title) => ({
